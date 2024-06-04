@@ -809,23 +809,58 @@
         });
     </script>
      <script>
-        $("#submit-form").submit((e)=>{
-            e.preventDefault()
-            $.ajax({
-                url:"https://script.google.com/macros/s/AKfycbxPZGikFhCefqX39xChlHtFD2EkynFox6PANUj_QHC13LjGo0bY3I33MKZ6KhKM7rkG/exec",
-                data:$("#submit-form").serialize(),
-                method:"post",
-                success:function (response){
-                    alert("Form submitted successfully")
-                    window.location.reload()
-                    //window.location.href="https://google.com"
+          $().ready(function () {
+            $('#submit-form').validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 2
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    message: {
+                        required: true,
+                        minlength: 2
+                    }
                 },
-                error:function (err){
-                    alert("Something Error")
-    
+                messages: {
+                    name: {
+                        required: "come on, you have a name don't you?",
+                        minlength: "your name must consist of at least 2 characters"
+                    },
+                    email: {
+                        required: "no email, no message"
+                    },
+                    message: {
+                        required: "um...yea, you have to write something to send this form.",
+                        minlength: "thats all? really?"
+                    }
+                },
+                submitHandler: function (form) {
+                    $.ajax({
+                        url:"https://script.google.com/macros/s/AKfycbxPZGikFhCefqX39xChlHtFD2EkynFox6PANUj_QHC13LjGo0bY3I33MKZ6KhKM7rkG/exec",
+                        data: $(form).serialize(),
+                        method: "POST",
+                        success: function (response) {
+                            $('#submit-form :input').attr('disabled', 'disabled');
+                            $('#submit-form').fadeTo("slow", 0.15, function () {
+                                $(this).find(':input').attr('disabled', 'disabled');
+                                $(this).find('label').css('cursor', 'default');
+                                alert("Form submitted successfully");
+                                window.location.reload();
+                            });
+                        },
+                        error: function (err) {
+                            $('#submit-form').fadeTo("slow", 0.15, function () {
+                                alert("Something went wrong. Please try again.");
+                            });
+                        }
+                    });
                 }
-            })
-        })
+            });
+        });
     </script>
 </body>
 
