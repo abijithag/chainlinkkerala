@@ -46,6 +46,19 @@
 </head>
 
 <body id="body">
+    <style>
+        .error-message {
+    color: red;
+    font-size: 12px;
+    display: none;
+}
+
+.success-message {
+    color: green;
+    font-size: 14px;
+    display: none;
+}
+    </style>
 
     <!-- preloader -->
     <div id="preloader">
@@ -453,31 +466,31 @@
 
                 <!-- contact form -->
                 <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 wow fadeInDown animated" data-wow-duration="500ms"
-                    data-wow-delay="300ms">
-                    <div class="contact-form">
-                        <h3>Say hello!</h3>
-                        <form action="#" id="submit-form">
-                            <div class="input-group name-email">
-                                <div class="input-field">
-                                    <input type="text" name="name" id="name" placeholder="Name" class="form-control">
-                                </div>
-                                <div class="input-field">
-                                    <input type="email" name="email" id="email" placeholder="Email"
-                                        class="form-control">
-                                </div>
-                            </div>
-                           
-                            
-                            <div class="input-group">
-                                <textarea name="message" id="message" placeholder="Message"
-                                    class="form-control"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <input type="submit" id="form-submit" class="pull-right" value="Send message">
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                data-wow-delay="300ms">
+               <div class="contact-form">
+                   <h3>Say hello!</h3>
+                   <form action="#" id="submit-form">
+                       <div class="input-group name-email">
+                           <div class="input-field">
+                               <input type="text" name="name" id="name" placeholder="Name" class="form-control">
+                               <span class="error-message" id="name-error"></span>
+                           </div>
+                           <div class="input-field">
+                               <input type="email" name="email" id="email" placeholder="Email" class="form-control">
+                               <span class="error-message" id="email-error"></span>
+                           </div>
+                       </div>
+                       <div class="input-group">
+                           <textarea name="message" id="message" placeholder="Message" class="form-control"></textarea>
+                           <span class="error-message" id="message-error"></span>
+                       </div>
+                       <div class="input-group">
+                           <input type="submit" id="form-submit" class="pull-right" value="Send message">
+                           <span class="success-message" id="success-message"></span>
+                       </div>
+                   </form>
+               </div>
+           </div>
                 <!-- end contact form -->
 
                 <!-- footer social links -->
@@ -613,31 +626,63 @@
 
 
      <script>
-          
-          $("#submit-form").submit((e)=>{
-            e.preventDefault()
+    $(document).ready(function() {
+    // Form validation
+    function validateForm() {
+        let isValid = true;
+        const name = $("#name").val().trim();
+        const email = $("#email").val().trim();
+        const message = $("#message").val().trim();
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+        $(".error-message").hide(); // Hide all error messages initially
+
+        if (name === "") {
+            $("#name-error").text("Name is required").show();
+            isValid = false;
+        }
+
+        if (email === "") {
+            $("#email-error").text("Email is required").show();
+            isValid = false;
+        } else if (!emailPattern.test(email)) {
+            $("#email-error").text("Please enter a valid email address").show();
+            isValid = false;
+        }
+
+        if (message === "") {
+            $("#message-error").text("Message is required").show();
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Form submission
+    $("#submit-form").submit(function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
             $.ajax({
-                url:"https://script.google.com/macros/s/AKfycbxPZGikFhCefqX39xChlHtFD2EkynFox6PANUj_QHC13LjGo0bY3I33MKZ6KhKM7rkG/exec",
-                data:$("#submit-form").serialize(),
-                method:"post",
-                success:function (response){
+                url: "https://script.google.com/macros/s/AKfycbxPZGikFhCefqX39xChlHtFD2EkynFox6PANUj_QHC13LjGo0bY3I33MKZ6KhKM7rkG/exec",
+                data: $("#submit-form").serialize(),
+                method: "POST",
+                success: function(response) {
                     $('#submit-form :input').attr('disabled', 'disabled');
-                            $('#submit-form').fadeTo("slow", 0.15, function () {
-                                $(this).find(':input').attr('disabled', 'disabled');
-                                $(this).find('label').css('cursor', 'default');
-                                alert("successfull")
-                              
-                            });
-            
-                   
-                    //window.location.href="https://google.com"
+                    $('#submit-form').fadeTo("slow", 0.15, function() {
+                        $(this).find(':input').attr('disabled', 'disabled');
+                        $(this).find('label').css('cursor', 'default');
+                        $("#success-message").text("Form submitted successfully").show();
+                    });
                 },
-                error:function (err){
-                    alert("Something Error")
-    
+                error: function(err) {
+                    $("#success-message").text("Something went wrong, please try again").css("color", "red").show();
                 }
-            })
-        })
+            });
+        }
+    });
+});
+
         
     </script>
 </body>
