@@ -192,6 +192,8 @@ body > section,
   top: 50%;
 }
 
+
+
 .carousel-caption h2 {
   font-size: 62px;
   font-weight: 300;
@@ -238,7 +240,7 @@ top: -8px;
 }
 
 .social-links li a {
-  color: rgba(249, 147, 14, 0.876);
+  color: rgba(0, 0, 0, 0.876);
   display: block;
   margin: 0 6px;
 }
